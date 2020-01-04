@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Get the engine version name (first argument after the app name -> second index -> 1)
-	std::string engineVersion = argv[1];
+	std::string engineVersionName = argv[1];
 
 	// Build the path to the LauncherInstalled.dat file -> this will contain a list of all installed engine versions + their paths.
 	wchar_t* wpath = NULL;//new wchar_t[256];
@@ -98,7 +98,53 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	std::cout << engineInstalls.size() << " Unreal Engine installs found!" << std::endl;
+	EngineInstall install;
+	bool bFoundInstall = false;
+
+	for (auto &_install : engineInstalls)
+	{
+		// Is this the engine verson the user is reffering to?
+		if (_install.name == engineVersionName)
+		{
+			// Found installation - set it up for later processing
+			install = _install;
+			bFoundInstall = true;
+			break;
+		}
+	}
+
+	if (!bFoundInstall)
+	{
+		// Log an error and give a list of installations to choose from.
+		std::cout << "Unable to find an Unreal Engine installation by the name of " << engineVersionName << "! Please choose one of the following:" << std::endl;
+		for (auto &_install : engineInstalls)
+		{
+			std::cout << "- " << _install.name << " (" << _install.path << ")" << std::endl;
+		}
+
+		return -4;
+	}
+
+	// We've found the engine path, now create the path to the UATTool bat file.
+	std::string UATToolPath = install.path + "/Engine/Build/BatchFiles/RunUAT.bat";
+
+	// Log the path of the UATTool we are using (that way the user knows what is going on).
+	std::cout << "UATTool is using RunUAT located at: " << UATToolPath << std::endl;
+
+	// Build the UAT command based on the path we found and the arguments passed in after the engine name.
+	std::stringstream UATCommandStream;
+
+	// Wrap the path in "s so the system does not get confused by whitespaces/etc.
+	UATCommandStream << "\"" << UATToolPath << "\" ";
+
+	// Copy over the remaining arguments from the input stream (program name + 1 parameter for UATTool means that all the arguments after index 1 should be added -> start at i=2).
+	for (int i = 2; i < argc; i++)
+	{
+		UATCommandStream << argv[i] << " ";
+	}
+
+	std::string UATCommand = UATCommandStream.str();
+	std::cout << "Running command: " << UATCommand << std::endl;
 
 	return 10;
 }
