@@ -134,17 +134,46 @@ int main(int argc, char *argv[])
 	// Build the UAT command based on the path we found and the arguments passed in after the engine name.
 	std::stringstream UATCommandStream;
 
-	// Wrap the path in "s so the system does not get confused by whitespaces/etc.
-	UATCommandStream << "\"" << UATToolPath << "\" ";
+	// Wrap the path in "s so the system does not get confused by whitespaces/etc. NOTE: The command also has to be wrapped in quotation marks: https://stackoverflow.com/a/55652942
+	UATCommandStream << "\"" << "\"" << UATToolPath << "\" ";
 
-	// Copy over the remaining arguments from the input stream (program name + 1 parameter for UATTool means that all the arguments after index 1 should be added -> start at i=2).
-	for (int i = 2; i < argc; i++)
+	// Use GetCommandLine to get the command used for this (that way the quotation marks are preserved), and strip the command name + first argument; based on: https://stackoverflow.com/a/14150434
+	LPTSTR cmd = GetCommandLine();
+	int l = strlen(argv[0]);// + strlen(" ") + strlen(argv[1]);
+	if (cmd == strstr(cmd, argv[0]))
 	{
-		UATCommandStream << argv[i] << " ";
+		cmd = cmd + l;
+		while (*cmd && isspace(*cmd))
+			++cmd;
 	}
+	l = strlen(argv[1]);// + strlen(" ") + strlen(argv[1]);
+	if (cmd == strstr(cmd, argv[1]))
+	{
+		cmd = cmd + l;
+		while (*cmd && isspace(*cmd))
+			++cmd;
+	}
+	std::string UATArguments = cmd;
+
+
+	// Copy over the remaining arguments from the input stream (program name + 1 parameter for UATTool means that all the arguments after index 1 should be added -> start at i=2). Also add a closing quotation mark.
+// 	for (int i = 2; i < argc; i++)
+// 	{
+// 		// Wrap all arguments in "s as they are stripped by default, and this way whitespaces in paths like -Plugin=C:/Cool Project/Plugin.uplugin won't cause any issues.
+// 		UATCommandStream << "\"" << argv[i] << "\" ";
+// 	}
+	UATCommandStream << UATArguments << "\"";
 
 	std::string UATCommand = UATCommandStream.str();
-	std::cout << "Running command: " << UATCommand << std::endl;
 
-	return 10;
+	// Print the command in blue bright letters to help distinguish it from the rest, and then reset the color. Such a bummer escape sequences aren't properly supported on Win.
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO Info;
+	GetConsoleScreenBufferInfo(hConsole, &Info);
+	SetConsoleTextAttribute(hConsole, 10);
+	std::cout << "Running UAT command: " << UATCommand << std::endl << std::endl;
+	SetConsoleTextAttribute(hConsole, Info.wAttributes);
+
+	// Run the command and return whatever the bat file decides to return.
+	return system(UATCommand.c_str());
 }
