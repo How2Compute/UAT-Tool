@@ -8,7 +8,7 @@ $zip_path = $downloads_path + '/uattool.zip';
 $destination = $downloads_path + '/uattool';
 
 # Confirm the paths/ourplans with the user
-Write-Output "UATTool Installation Utility.\nThis utility will download the latest UATTool release from github and save it at $($zip_path).\nFrom there, it will extract the zip file to $($destination).\nFinally, it will add this directory to your path.";
+Write-Output "UATTool Installation Utility.`n==========`nThis utility will download the latest UATTool release from github and save it at $($zip_path).`nFrom there, it will extract the zip file to $($destination).`nFinally, it will add this directory to your path.`n==========";
 
 if ((read-host "Please enter 'Y' to contontinue, or 'N' to abort") -ne "Y")
 {
