@@ -40,3 +40,15 @@ Lastly, you can download the latest [release](https://github.com/How2Compute/UAT
 
 # I think I've found a bug! What do I do?
 Please consider opening up a GitHub Issue so we can investigate your issue. If possible, include the steps you took to hit the issue, the command you ran as well as a screenshot of the error.
+
+# Compiling UATTool
+UATTool's project files are generated using CMake. Please ensure that you have both CMake and Visual Studio installed. Please also ensure that you have the [nlohmann JSON library](https://github.com/nlohmann/json) installed.
+
+To generate the Visual Studio project files for UATTool, open up the command prompt to where you downloaded this GitHub repository, and run the following command:
+```
+cmake .
+```
+This will generate the visual studio project files that will allow you to compile the project. To produce the uattool executable. open up the `uattool.sln` solution file, select your desired configuration and use right click -> Build on the `uattool` solution. The generated binaries will be placed in the `Debug/` or `Release/` directory depending on your build configuration. 
+
+# Disclaimer
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
