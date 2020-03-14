@@ -128,9 +128,6 @@ int main(int argc, char *argv[])
 	// We've found the engine path, now create the path to the UATTool bat file.
 	std::string UATToolPath = install.path + "/Engine/Build/BatchFiles/RunUAT.bat";
 
-	// Log the path of the UATTool we are using (that way the user knows what is going on).
-	std::cout << "UATTool is using RunUAT located at: " << UATToolPath << std::endl;
-
 	// Build the UAT command based on the path we found and the arguments passed in after the engine name.
 	std::stringstream UATCommandStream;
 
@@ -140,28 +137,33 @@ int main(int argc, char *argv[])
 	// Use GetCommandLine to get the command used for this (that way the quotation marks are preserved), and strip the command name + first argument; based on: https://stackoverflow.com/a/14150434
 	LPTSTR cmd = GetCommandLine();
 	int l = strlen(argv[0]);// + strlen(" ") + strlen(argv[1]);
+	std::string argv0WithQuotes = "\"" + std::string(argv[0]) + "\"";
 	if (cmd == strstr(cmd, argv[0]))
 	{
 		cmd = cmd + l;
 		while (*cmd && isspace(*cmd))
 			++cmd;
 	}
-	l = strlen(argv[1]);// + strlen(" ") + strlen(argv[1]);
+	// In case it is wrapped with quotes
+	else if (cmd == strstr(cmd, argv0WithQuotes.c_str()))
+	{
+		cmd = cmd + l + 2;
+		while (*cmd && isspace(*cmd))
+			++cmd;
+	}
+	// Remove the second argument / the name one
+	l = strlen(argv[1]);
 	if (cmd == strstr(cmd, argv[1]))
 	{
 		cmd = cmd + l;
 		while (*cmd && isspace(*cmd))
 			++cmd;
 	}
+
 	std::string UATArguments = cmd;
 
 
 	// Copy over the remaining arguments from the input stream (program name + 1 parameter for UATTool means that all the arguments after index 1 should be added -> start at i=2). Also add a closing quotation mark.
-// 	for (int i = 2; i < argc; i++)
-// 	{
-// 		// Wrap all arguments in "s as they are stripped by default, and this way whitespaces in paths like -Plugin=C:/Cool Project/Plugin.uplugin won't cause any issues.
-// 		UATCommandStream << "\"" << argv[i] << "\" ";
-// 	}
 	UATCommandStream << UATArguments << "\"";
 
 	std::string UATCommand = UATCommandStream.str();
