@@ -109,21 +109,37 @@ int main(int argc, char *argv[])
 	 *
 	 * NOTE2: Using HKEY_CURRENT_USER as that's the one that contains the Builds stuff. HKEY_LOCAL_MACHINE also contains SOFTWARE\\Epic Games\\Unreal Engine, but did not contain any build information in my testing.
 	 * It may very well depend on the installation settings chosen during the install, so we may want to implement a fall back to HKEY_LOCAL_MACHINE in the future.
+	 * 
+	 * NOTE3: We're naming these source builds source-X by default. This avoids the long/cryptic cryptic name the "key" has (example: "{00C1F0B2-4277-67C4-A3E3-8DB5D8165954}"),
+	 * allows for unique names, avoids having to somehow interpret or use git to evaluate the corresponding (major) engine version, 
+	 * and should provide consistent naming when new source builds are added (even if they have the same major/minor version number), since new keys are added at the end -> have a higher index.
+	 * This is all based on playing around with the registry editor / I haven't acually added a new source build to test this hypothesis just yet, but feel free to poen an issue/submit a PR if this turns out to be false.
 	 */
 	HKEY hKey;
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("SOFTWARE\\Epic Games\\Unreal Engine\\Builds"), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
 	{
 		// Buffers to store the key and value; large to ensure we can store long paths/names
-		TCHAR lpValueName[1024];
+		TCHAR lpValueName[1024]; // Key/source build identifier (not actually used right now, but may become relevant in the future)
 		DWORD lpcchValueName = 1024;
-		BYTE lpData[1024];
+		BYTE lpData[1024]; // Value/path
 		DWORD lpcchData = 1024;
 
 		// NOTE: Could be done using a for loop, but this integrates a nice way of status checking and exiting the loop when no new data can be read
 		int readIndex = 0;
 		while (RegEnumValue(hKey, readIndex, lpValueName, &lpcchValueName, NULL, /* TODO: do we want to force REG_SZ in the future? */NULL, lpData, &lpcchData) == ERROR_SUCCESS)
 		{
-			printf(TEXT("%s -> %s\n"), (char*)lpValueName, (char*)lpData);
+			// Add this source entry to the list of installs as per the information contained in the starting comment.
+			// We're preserving 0-indexing here since most users will probably be programmers anyway.
+			std::ostringstream appNameStream;
+			appNameStream << "source-" << readIndex;
+			std::string copyOfStr = appNameStream.str();
+
+			EngineInstall install;
+			install.name = appNameStream.str();
+			install.path = (char*)lpData;
+			engineInstalls.push_back(install);
+
+			// Increment the counter so naming & the index we fetch are good to go for the next one.
 			readIndex++;
 		}
 	}
