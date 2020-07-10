@@ -8,6 +8,10 @@
 #include <KnownFolders.h>
 #include <shlobj.h>
 
+// Used for registry reading buffers
+#define MAX_KEY_LENGTH 255
+#define MAX_VALUE_NAME 255
+
 // Abbreviate nlohmann::json to json
 using json = nlohmann::json;
 
@@ -98,12 +102,38 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	/* Fetch the source builds (these are stored in the registry)
+	 * 
+	 * NOTE: The Windows registry is kind of a pain, and adding this took me forever, but it should work.
+	 * Please feel free to submit a PR that improves this code, as my experience with using the Windows registry before writing this was 0 / I have no sense of the best practices.
+	 *
+	 * NOTE2: Using HKEY_CURRENT_USER as that's the one that contains the Builds stuff. HKEY_LOCAL_MACHINE also contains SOFTWARE\\Epic Games\\Unreal Engine, but did not contain any build information in my testing.
+	 * It may very well depend on the installation settings chosen during the install, so we may want to implement a fall back to HKEY_LOCAL_MACHINE in the future.
+	 */
+	HKEY hKey;
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("SOFTWARE\\Epic Games\\Unreal Engine\\Builds"), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
+	{
+		// Buffers to store the key and value; large to ensure we can store long paths/names
+		TCHAR lpValueName[1024];
+		DWORD lpcchValueName = 1024;
+		BYTE lpData[1024];
+		DWORD lpcchData = 1024;
+
+		// NOTE: Could be done using a for loop, but this integrates a nice way of status checking and exiting the loop when no new data can be read
+		int readIndex = 0;
+		while (RegEnumValue(hKey, readIndex, lpValueName, &lpcchValueName, NULL, /* TODO: do we want to force REG_SZ in the future? */NULL, lpData, &lpcchData) == ERROR_SUCCESS)
+		{
+			printf(TEXT("%s -> %s\n"), (char*)lpValueName, (char*)lpData);
+			readIndex++;
+		}
+	}
+
 	EngineInstall install;
 	bool bFoundInstall = false;
 
 	for (auto &_install : engineInstalls)
 	{
-		// Is this the engine verson the user is reffering to?
+		// Is this the engine version the user is refering to?
 		if (_install.name == engineVersionName)
 		{
 			// Found installation - set it up for later processing
