@@ -3,17 +3,6 @@
 version = 3
 
 [[package]]
-name = "UAT-Tool"
-version = "0.1.0"
-dependencies = [
- "clap",
- "colored",
- "serde",
- "serde_json",
- "winsafe",
-]
-
-[[package]]
 name = "anstream"
 version = "0.6.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -219,6 +208,17 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "uattool"
+version = "1.0.0"
+dependencies = [
+ "clap",
+ "colored",
+ "serde",
+ "serde_json",
+ "winsafe",
 ]
 
 [[package]]

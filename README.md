@@ -1,5 +1,5 @@
 # UAT-Tool
-UAT-Tool helps you access the Unreal Build Tool more easily: copying paths is now a thing of the past!
+UAT-Tool helps you access the Unreal Automation Tool more easily: copying paths is now a thing of the past!
 
 ![UATTool Screenshot](https://i.imgur.com/96xHZ07.png)
 
@@ -7,24 +7,29 @@ UATTool will automatically detect launcher builds of the engine, and substitute 
 
 
 # How do I use it?
-UATTool is currently still an experiment that we use internally here at HowToCompute. We may expand upon it's functionality in the future to allow compatibility with source builds and to improve it's user-friendlyness.
-
 Once you have installed UATTool, start a new command prompt and run ```uattool```. This will show you the command's syntax. This can also be found in the snipet below:
 ```
 Usage: ./uattool <engine_version> <UAT Command>
 ```
 
-To list the engine versions that UATTool has detected on your system, run ```uattool 4```. This will list all of the available engines with their respective names and paths:
+To list the engine versions that UATTool has detected on your system, run ```uattool --list```. This will list all of the available engines with their respective names and paths:
 ```
 ...
-- 4.21 (D:\Program Files\Epic Games\UE_4.21)
-- 4.22 (D:\Program Files\Epic Games\UE_4.22)
+- 5.4.1 [LAUNCHER]      @        D:\LauncherBuilds\UE_5.4
+- 5.1.1 [SOURCE]        @        C:/SourceBuilds/UE5
 ...
 ```
 
 To run a UAT command, such as the `BuildPlugin` command, simply run uattool with the name of the version you'd like to use, and the rest of the UAT command you'd like to run. An example that we use internally can be found below:
+```bat
+uattool 5.2 BuildPlugin -Package="D:/PluginBuilds/TwitchWorks" -Plugin="D:\Unreal Projects\TwitchworksProject\Plugins\TwitchWorks\TwitchWorks.uplugin" 
 ```
-uattool 4.24 BuildPlugin -Package="D:/PluginBuilds/TwitchWorks" -Plugin="D:\Unreal Projects\TwitchworksProject\Plugins\TwitchWorks\TwitchWorks.uplugin" 
+
+With the new rust (`v1.0.0`) version, it is possible to batch commands for multiple engine versions, and to select source builds by their version/changelist number. For the `<engine_version>` listed above, separate your engine versions with a `+`. For any (source/launcher) build, specify the number (e.g. `5.4` or `5.4.1`). If you'd like a source build, prefix `source-` (e.g. `source-5.1`). To use a changelist number, use `cl-` (e.g. `cl-23058290`). Finally, to use the most recent version of Unreal Engine installed on the system (based on their 3-digit version number), use `latest`. 
+
+Putting this all together, you may end up with something like the following. This will run your command once for each of the versions listed:
+```bat
+uattool source-5.2+5.2+cl-23058290+latest BuildPlugin ...
 ```
 
 # How do I install it?
