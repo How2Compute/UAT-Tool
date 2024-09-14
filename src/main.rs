@@ -14,17 +14,9 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
-    let launcher_builds = engine_utils::get_launcher_builds().expect("Unable to get launcher builds");
-    let source_builds = engine_utils::get_source_builds().expect("Unable to get source builds");
-    println!("Launcher builds {:?}!", launcher_builds);
-    println!("Source builds {:?}!", source_builds);
-    println!("ARGS: {:?}", args);
 
-    launcher_builds.iter().for_each(|(key, value)| {
-        engine_utils::get_engine_version(value).expect("EVR: ");
-    });
-    source_builds.iter().for_each(|(key, value)| {
-        engine_utils::get_engine_version(value).expect("EVR: ");
-    });
-    
+    let engine_installs = engine_utils::get_engine_installs().expect("Unable to fetch engine installs: ");
+    for install in engine_installs {
+        println!("- {:?}", install)
+    }
 }
