@@ -1,6 +1,6 @@
 # UAT-Tool
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/how2compute/uat-tool/auto_build_master.yml)
- ![GitHub Release](https://img.shields.io/github/v/release/how2compute/uat-tool?include_prereleases&label=stable) ![GitHub Latest Release](https://img.shields.io/github/v/release/how2compute/uat-tool?include_prereleases&label=latest)
+ ![GitHub Release](https://img.shields.io/github/v/release/how2compute/uat-tool?label=stable) ![GitHub Latest Release](https://img.shields.io/github/v/release/how2compute/uat-tool?include_prereleases&label=latest)
 
 UAT-Tool helps you access the Unreal Automation Tool more easily: copying paths is now a thing of the past!
 
