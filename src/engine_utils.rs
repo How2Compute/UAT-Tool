@@ -3,6 +3,7 @@ use std::fs;
 use std::hash::Hash;
 use std::path::{Path, PathBuf};
 
+use clap::builder::Str;
 use serde::{Deserialize, Serialize};
 use winsafe::prelude::advapi_Hkey;
 
@@ -46,6 +47,7 @@ struct BuildVersionFile {
     MinorVersion: u8,
     PatchVersion: u8,
     Changelist: u32,
+    CompatibleChangelist: u32, // Included mainly in source builds, "cl-" will match to this is Changelist=0
     IsLicenseeVersion: u8, // NOTE: Seems to be a flag/boolean val, but stored as a 0(/1?)
     IsPromotedBuild: u8, // NOTE: Seems to be a flag/boolean val, but stored as a 0(/1?)
     BranchName: String
@@ -53,21 +55,22 @@ struct BuildVersionFile {
 
 // This struct contains a representation of an Unreal Engine install.
 // NOTE: Every version should have a major/minor/patch version associated with it! Pretty much: we require a valid Build.version
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct EngineInstall {
     // Unreal Engine version: {MAJOR}.{MINOR}.{PATCH}, e.g. 5.4.3 -> MAJOR=5, MINOR=4, PATCH=3
-    major_version: u8,
-    minor_version: u8,
-    patch_version: u8,
+    pub major_version: u8,
+    pub minor_version: u8,
+    pub patch_version: u8,
+    pub cl_version: u32,
 
     // Branch name
-    branch_name: String,
+    pub branch_name: String,
 
     // Whether or not this is a source build of the engine
-    is_source: bool,
+    pub is_source: bool,
 
     // Base directory of the Unreal Engine installatino
-    base_dir: PathBuf,
+    pub base_dir: PathBuf,
 }
 
 /*
@@ -139,6 +142,10 @@ pub fn to_engine_install(name: &str, is_source: bool,  path: PathBuf) -> Option<
     if let Some(version_info) = get_engine_version(&path).ok() {
         return Some(EngineInstall {
             base_dir: path,
+            cl_version: match version_info.Changelist {
+                0 => version_info.CompatibleChangelist,
+                i => i
+            },
             branch_name: version_info.BranchName,
             major_version: version_info.MajorVersion,
             minor_version: version_info.MinorVersion,
@@ -153,7 +160,7 @@ pub fn to_engine_install(name: &str, is_source: bool,  path: PathBuf) -> Option<
 // Helper function that reads the Build.version file which has info about the major/minor/etc. version
 // NOTE: This may not be too useful for custom branches of the editor, but should at least allow
 //       us to capture launcher builds + "regular" git clones
-pub fn get_engine_version(engine_base_dir: &PathBuf) -> Result<BuildVersionFile, &'static str> {
+fn get_engine_version(engine_base_dir: &PathBuf) -> Result<BuildVersionFile, &'static str> {
     // Read + parse the Build.version file. This should be present for all launcher/source builds and gives us a "standardized"
     // way of reading engine versions.
     let build_version_path = engine_base_dir.join("Engine/Build/Build.version");
