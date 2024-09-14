@@ -10,14 +10,14 @@ mod platform_utils;
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    #[clap(long = "list", short = 'o')]
+    #[arg(long = "list", short = 'l')]
     should_list: bool,
 
     /// Version(s) of Unreal Engine to use - "+" as separator
-    engine_version: String,
+    engine_version: Option<String>,
 
     /// The UAT command to run
-    #[arg(trailing_var_arg = true, required = true)]
+    #[arg(trailing_var_arg = true, required=false)]
     command: Vec<String>,
 }
 
@@ -150,7 +150,12 @@ fn main() {
     // Regular run
     else {
         // Split & look up the passed in Unreal Engine versions
-        let requested_engine_names: Vec<&str> = args.engine_version.split("+").collect();
+        if args.engine_version.is_none() {
+            println!("{}", "Please provide an engine version".red().bold());
+            return;
+        }
+        let engine_version_string = args.engine_version.unwrap();
+        let requested_engine_names: Vec<&str> = engine_version_string.split("+").collect();
         let engines_to_use: Vec<(&str, Option<EngineInstall>)> = requested_engine_names
             .iter()
             .map(|&version_name| {
