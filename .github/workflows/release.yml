@@ -1,7 +1,7 @@
+name: Release binary auto-uploader
 on:
   release:
     types: [created]
-
 jobs:
   release:
     runs-on: windows-latest

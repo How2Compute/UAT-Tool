@@ -1,7 +1,10 @@
 # UAT-Tool
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/how2compute/uat-tool/auto_build_master.yml)
+ ![GitHub Release](https://img.shields.io/github/v/release/how2compute/uat-tool?include_prereleases&label=stable) ![GitHub Latest Release](https://img.shields.io/github/v/release/how2compute/uat-tool?include_prereleases&label=latest)
+
 UAT-Tool helps you access the Unreal Automation Tool more easily: copying paths is now a thing of the past!
 
-![UATTool Screenshot](https://i.imgur.com/96xHZ07.png)
+![uattool screenshot](./resources/uattool_screenshot.png)
 
 UATTool will automatically detect launcher builds of the engine, and substitute the RunUAT.bat path into the command for you.
 
@@ -33,27 +36,19 @@ uattool source-5.2+5.2+cl-23058290+latest BuildPlugin ...
 ```
 
 # How do I install it?
-The easiest way to install UATTool is opening up a powershell prompt, and running the following line of code:
-```
-iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/How2Compute/UAT-Tool/master/install_uattool.ps1'))
-```
-This will download and run the installation script.
+We're working on bringing `uattool` to your favourite package manager!
 
-Alternatively, you can download the installation scipt manually and run it using powershell. You can download the latest version of the powershell script [here](https://raw.githubusercontent.com/How2Compute/UAT-Tool/master/install_uattool.ps1).
-
-Lastly, you can download the latest [release](https://github.com/How2Compute/UAT-Tool/releases), extract it, and add the directory that contains the `uattool.exe` file to your system's path yourself. We will unfortunately not be able to cover this within the scope of this README. 
+For now, you can download the latest [release](https://github.com/How2Compute/UAT-Tool/releases), extract it, and add the directory that contains the `uattool.exe` file to your system's path yourself. We will unfortunately not be able to cover this within the scope of this README. 
 
 # I think I've found a bug! What do I do?
 Please consider opening up a GitHub Issue so we can investigate your issue. If possible, include the steps you took to hit the issue, the command you ran as well as a screenshot of the error.
 
-# Compiling UATTool
-UATTool's project files are generated using CMake. Please ensure that you have both CMake and Visual Studio installed. Please also ensure that you have the [nlohmann JSON library](https://github.com/nlohmann/json) installed.
+# Compiling UAT-Tool
+UATTool was built using rust. To build it, make sure you have `cargo` and `rust` installed. From there, simply run the following command to build UAT-Tool:
+```sh
+cargo build
+```
 
-To generate the Visual Studio project files for UATTool, open up the command prompt to where you downloaded this GitHub repository, and run the following command:
-```
-cmake .
-```
-This will generate the visual studio project files that will allow you to compile the project. To produce the uattool executable. open up the `uattool.sln` solution file, select your desired configuration and use right click -> Build on the `uattool` solution. The generated binaries will be placed in the `Debug/` or `Release/` directory depending on your build configuration. 
 
 # Disclaimer
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

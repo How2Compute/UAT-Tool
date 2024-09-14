@@ -1,4 +1,4 @@
-name: Rust
+name: master auto-build
 
 on:
   push:
