@@ -4,18 +4,18 @@ on:
 
 jobs:
   release:
-    name: release ${{ matrix.target }}
     runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [x86_64-pc-windows-gnu]
     steps:
-      - uses: actions/checkout@master
-      - name: Compile and release
-        uses: rust-build/rust-build.action@v1.4.5
+      - uses: actions/checkout@v4
+
+      - name: Build Release Binaries
+        run: cargo build --release
+
+      - name: Add artifacts to GH release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            target/release/uattool.exe
+            README.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          RUSTTARGET: ${{ matrix.target }}
-          EXTRA_FILES: "README.md"
