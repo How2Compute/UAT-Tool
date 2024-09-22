@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>uattool</id>
+    <version>$version$</version>
+    <title>uattool (Install)</title>
+    <authors>HowToCompute</authors>
+    <projectUrl>https://github.com/How2Compute/UAT-Tool</projectUrl>
+    <licenseUrl>https://github.com/How2Compute/UAT-Tool/blob/master/LICENSE</licenseUrl>
+    <projectSourceUrl>https://github.com/How2Compute/UAT-Tool</projectSourceUrl>
+    <packageSourceUrl>https://github.com/How2Compute/UAT-Tool</packageSourceUrl>
+    <tags>uattool unreal unreal-engine uat build-tools</tags>
+    <summary>uattool simplifies running Unreal Engine's Unreal Automation Tool</summary>
+    <description>
+    uattool is a helper executable that finds the versions of Unreal Engine that you have installed on your system. It then allows you to run a UAT command against them, reducing the number of times you've got to copy-and-paste the path of the `RunUAT.bat` script.
+
+    To see the versions of Unreal Engine you have installed, run:
+    ```
+    uattool --list
+    ```
+
+    To run a command, specify the version* and the uat command. For example, to build a plugin for Unreal Engine 5.2-5.4, simply run::
+    ```
+    uattool 5.2+5.3+5.4 BuildPlugin -Plugin="C:/path/to/plugin.uplugin" -Package="C:/PluginPack"
+    ```
+    </description>
+    <releaseNotes>
+    Initial submision pending verification, full release notes will follow when releases are integrated into CI/CD.
+    See: https://github.com/How2Compute/UAT-Tool/releases
+    </releaseNotes>
+  </metadata>
+  <files>
+    <file src="target/release/uattool.exe" />
+    <file src="LICENSE" />
+    <file src="CHOCO_VERIFICATION.txt" target="VERIFICATION.txt" />
+  </files>
+</package>

@@ -1,0 +1,4 @@
+﻿
+VERIFICATION
+HowToCompute is the author of this software, releases will be automated through CI/CD systems after initial approval.
+Checksums can be verified against the GitHub release of the same version over at: https://github.com/How2Compute/UAT-Tool/releases
