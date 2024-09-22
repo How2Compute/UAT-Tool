@@ -30,7 +30,7 @@
   </metadata>
   <files>
     <file src="target/release/uattool.exe" />
-    <file src="LICENSE" target="LICENSE.txt" />
+    <file src="LICENSE.txt" />
     <file src="CHOCO_VERIFICATION.txt" target="VERIFICATION.txt" />
   </files>
 </package>
