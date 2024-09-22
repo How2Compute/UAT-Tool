@@ -1,7 +1,8 @@
 use std::process::Command;
 
 use clap::Parser;
-use colored::Colorize;
+use anstream::println;
+use owo_colors::OwoColorize;
 use engine_utils::EngineInstall;
 
 mod engine_utils;
@@ -140,8 +141,8 @@ fn main() {
                 "- {}\t@\t {}",
                 version_string,
                 match install.base_dir.to_str() {
-                    Some(path) => path.italic(),
-                    None => "UNKNOWN".red().bold(),
+                    Some(path) => format!("{}", path.italic()),
+                    None => format!("{}", "UNKNOWN".red().bold()),
                 }
             )
         }
