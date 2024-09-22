@@ -3,7 +3,7 @@
   <metadata>
     <id>uattool</id>
     <version>$version$</version>
-    <title>uattool (Install)</title>
+    <title>uattool</title>
     <authors>HowToCompute</authors>
     <projectUrl>https://github.com/How2Compute/UAT-Tool</projectUrl>
     <licenseUrl>https://github.com/How2Compute/UAT-Tool/blob/master/LICENSE</licenseUrl>
@@ -25,13 +25,12 @@
     ```
     </description>
     <releaseNotes>
-    Initial submision pending verification, full release notes will follow when releases are integrated into CI/CD.
-    See: https://github.com/How2Compute/UAT-Tool/releases
+    See the corresponding version at: https://github.com/How2Compute/UAT-Tool/releases
     </releaseNotes>
   </metadata>
   <files>
     <file src="target/release/uattool.exe" />
-    <file src="LICENSE" />
+    <file src="LICENSE" target="LICENSE.txt" />
     <file src="CHOCO_VERIFICATION.txt" target="VERIFICATION.txt" />
   </files>
 </package>
